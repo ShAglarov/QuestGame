@@ -7,11 +7,22 @@
 
 import Foundation
 
+protocol DeadhDelegate: AnyObject {
+    func dead()
+}
+
 struct Character {
-    var health: Int
+    var health: Int {
+        didSet {
+            if health <= 0 {
+                delegate?.dead()
+            }
+        }
+    }
     var strength: Int
     var luck: Int
     var inventory: [String]
+    var delegate: DeadhDelegate?
     
     mutating func updateHealth(by amount: Int) {
         health += amount
@@ -52,3 +63,4 @@ struct Character {
         }
     }
 }
+

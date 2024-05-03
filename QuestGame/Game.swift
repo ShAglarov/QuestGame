@@ -7,30 +7,35 @@
 
 import Foundation
 
+protocol GameOverDelegate: AnyObject {
+    func gameOver()
+}
+
 class Game {
     var currentScene: Scene
     var character: Character
     var scenes: [String: Scene]
-
+    
+    var gameOverDelegate: GameOverDelegate?
+    var deadDelegate: DeadhDelegate?
+    
     init(startScene: String, scenes: [String: Scene], character: Character) {
         self.currentScene = scenes[startScene]!
         self.character = character
         self.scenes = scenes
     }
-
-    func start() {
-        moveToScene(sceneName: currentScene.description)
-    }
-
-    func moveToScene(sceneName: String) {
+    
+    private func moveToScene(sceneName: String) {
         if let scene = scenes[sceneName] {
             currentScene = scene
             print("Перешли к сцене: \(scene.description)")
+            print("Количество жизней: \(character.health)")
+            print("Инвертарь: \(character.inventory.joined(separator: ", "))")
         } else {
             print("Сцена не найдена. Проверьте название сцены.")
         }
     }
-
+    
     func processChoice(choice: Choice) {
         choice.effect?(&character)
         if let nextSceneName = scenes[choice.destination ?? ""] {
@@ -39,8 +44,8 @@ class Game {
             endGame()
         }
     }
-
+    
     func endGame() {
-        print("Игра окончена. Ваши статистики: Здоровье - \(character.health), Сила - \(character.strength), Удача - \(character.luck), Инвентарь - \(character.inventory.joined(separator: ", "))")
+        gameOverDelegate?.gameOver()
     }
 }

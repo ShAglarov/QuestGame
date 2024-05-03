@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import UIKit
 
 struct Scene {
     let description: String
+    let image: UIImage?
     let choices: [Choice]
 }

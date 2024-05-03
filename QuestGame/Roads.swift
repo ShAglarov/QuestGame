@@ -26,5 +26,9 @@ struct Roads {
     static let ventEscape = "ventEscape"
     static let searchCode = "searchCode"
     
-    
+    static let rooms: [String] = [start, mainHall, trapped,
+                            laboratory, controlRoom, escapeRoute,
+                               caution, heroicReturn.randomElement()!, freedom,
+                              gameover, alternativeExit, narrowEscape,
+                       desperateSearch, deepIntoTheLab, ventEscape, searchCode]
 }
