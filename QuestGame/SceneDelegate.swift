@@ -11,38 +11,58 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
+    // Метод, вызываемый при подключении сцены
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
+        // Проверяем, что сцена передана в параметре является UIWindowScene
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        // Создаем новое окно с переданной сценой
         let window = UIWindow(windowScene: windowScene)
-        
         self.window = window
         
+        // Инициализируем начальные параметры персонажа
         let character = Character(health: 100, strength: 10, luck: 5, inventory: [])
+        
+        // Создаем все доступные сцены для игры
         let scenes = createScenes()
+        
+        // Создаем объект игры с начальной сценой, доступными сценами и персонажем
         let game = Game(startScene: Roads.start, scenes: scenes, character: character)
         
+        // Создаем начальный контроллер и устанавливаем его свойства
         let initialVC = SceneViewController()
         initialVC.scene = scenes[Roads.start]
         initialVC.character = character
         initialVC.game = game
         
+        // Оборачиваем начальный контроллер в навигационный контроллер
         let navigationController = UINavigationController(rootViewController: initialVC)
+        
+        // Устанавливаем навигационный контроллер как корневой контроллер окна
         window.rootViewController = navigationController
+        
+        // Делаем окно видимым
         window.makeKeyAndVisible()
     }
     
+    // Создаем функцию для отображения сцен игры
     func createScenes() -> [String: Scene] {
+        // Инициализируем пустой словарь для хранения всех сцен игры
         var scenes = [String: Scene]()
         
         // Сцена: Начало приключения
         scenes[Roads.start] = Scene(
-            description: "Вы находитесь у входа в секретную лабораторию. Куда пойдете?", 
+            // Описание начальной сцены
+            description: "Вы находитесь у входа в секретную лабораторию. Куда пойдете?",
+            // Изображение, которое будет отображаться на этой сцене
             image: UIImage(named: "lab"),
+            // Выбор сцены:
             choices: [
+                // Указывает на следующую сцену (Главный зал)
                 Choice(text: "Войти в главный зал", destination: Roads.mainHall, requiredItem: nil, effect: nil),
+                // Нет необходимого предмета для этого выбора
                 Choice(text: "Обойти лабораторию и искать другой вход", destination: Roads.trapped, requiredItem: nil, effect: { $0.updateHealth(by: -6) }),
+                // Нет особого эффекта при выборе этого варианта
                 Choice(text: "Уйти и вызвать подкрепление", destination: "подкрепление", requiredItem: nil, effect: { $0.updateHealth(by: -6) })
             ])
         
@@ -166,8 +186,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             description: "В ходе поиска кодов доступа, вы обнаружили временной телепорт, который так же был разработан в этой секретной лаборатории, вы сфотографировали данный портал и решили?",
             image: UIImage(named: "teleportportal"),
             choices: [
-                Choice(text: "Войти в портал", destination: "портал", requiredItem: nil, effect: { $0.addItem("photodoc")}),
-                Choice(text: "Вернуться назад", destination: Roads.controlRoom, requiredItem: nil, effect: { $0.addItem("photodoc") }),
+                Choice(text: "Сфотографировать портал и войти в портал", destination: "портал", requiredItem: nil, effect: { $0.addItem("photodoc")}),
+                Choice(text: "Сфотографировать портал и вернуться назад", destination: Roads.controlRoom, requiredItem: nil, effect: { $0.addItem("photodoc") }),
             ])
         
         // Добавление финальной сцены: Выход из лаборатории
